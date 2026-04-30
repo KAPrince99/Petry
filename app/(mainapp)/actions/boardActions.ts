@@ -31,6 +31,30 @@ export async function getBoards(): Promise<boards[]> {
   }
 }
 
+// GET SINGLE BOARD
+export async function getBoardById(boardId: string): Promise<boards | null> {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("boards")
+      .select("id, user_id, title, description, color, created_at, updated_at")
+      .eq("id", boardId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error fetching board by id:", error);
+    throw new Error("Failed to fetch board");
+  }
+}
+
 // CREATE BOARD
 export async function createBoard(
   board: Omit<boards, "id" | "created_at" | "updated_at" | "user_id">,

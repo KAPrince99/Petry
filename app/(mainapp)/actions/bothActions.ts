@@ -1,8 +1,14 @@
 "use server";
 
-import { boards } from "@/lib/supabase/models";
+import { createClient } from "@/lib/supabase/server";
+import { boards, columns } from "@/lib/supabase/models";
+import { auth } from "@clerk/nextjs/server";
 import { createBoard } from "./boardActions";
 import { createColumn } from "./columnActions";
+
+type BoardWithColumns = boards & {
+  columns: columns[];
+};
 
 export async function createBoardColumns(
   board: Omit<boards, "id" | "created_at" | "updated_at" | "user_id">,
@@ -47,5 +53,33 @@ export async function createBoardColumns(
   } catch (error) {
     console.error("Error creating board columns:", error);
     throw new Error("Failed to create board columns");
+  }
+}
+
+export async function getBoardWithColumns(
+  boardId: string,
+): Promise<BoardWithColumns | null> {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("boards")
+      .select(
+        "id, user_id, title, description, color, created_at, updated_at, columns(id, board_id, title, sort_order, created_at)",
+      )
+      .eq("id", boardId)
+      .eq("user_id", userId)
+      .order("sort_order", { referencedTable: "columns", ascending: true })
+      .maybeSingle();
+
+    if (error) throw error;
+    return data as BoardWithColumns | null;
+  } catch (error) {
+    console.error("Error fetching board with columns:", error);
+    throw new Error("Failed to fetch board with columns");
   }
 }

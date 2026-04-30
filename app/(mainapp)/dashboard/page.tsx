@@ -32,6 +32,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { DASHBOARD_QUERY_KEYS, getBoardRoute } from "@/lib/dashboard/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -67,7 +68,7 @@ export default function DashBoard() {
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
   const { data: boards = [] } = useQuery({
-    queryKey: ["boards"],
+    queryKey: DASHBOARD_QUERY_KEYS.boards,
     queryFn: getBoards,
   });
 
@@ -129,7 +130,7 @@ export default function DashBoard() {
   } = useMutation({
     mutationFn: async () => createBoardColumns(dummy),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["boards"] });
+      queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEYS.boards });
     },
   });
 
@@ -349,7 +350,7 @@ export default function DashBoard() {
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {filteredBoards.map((board) => (
-                <Link href={`/dashboard/${board.id}`} key={board.id}>
+                <Link href={getBoardRoute(board.id)} key={board.id}>
                   <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between gap-2">
@@ -402,7 +403,7 @@ export default function DashBoard() {
             <div>
               {filteredBoards.map((board, index) => (
                 <div key={board.id} className={index > 0 ? "mt-4" : ""}>
-                  <Link href={`/dashboard/${board.id}`}>
+                  <Link href={getBoardRoute(board.id)}>
                     <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between gap-2">
