@@ -15,7 +15,7 @@ export async function getBoards(): Promise<boards[]> {
 
     const { data, error } = await supabase
       .from("boards")
-      .select("*")
+      .select("id, user_id, title, description, color, created_at, updated_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
