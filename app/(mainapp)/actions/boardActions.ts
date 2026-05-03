@@ -55,6 +55,48 @@ export async function getBoardById(boardId: string): Promise<boards | null> {
   }
 }
 
+// UPDATE BOARD
+export async function updateBoard(
+  boardId: string,
+  patch: {
+    title: string;
+    description: string | null;
+    color: string | null;
+  },
+): Promise<boards> {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("boards")
+      .update({
+        title: patch.title,
+        description: patch.description,
+        color: patch.color,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", boardId)
+      .eq("user_id", userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    if (!data) {
+      throw new Error("Board not found or not updated");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error updating board:", error);
+    throw new Error("Failed to update board");
+  }
+}
+
 // CREATE BOARD
 export async function createBoard(
   board: Omit<boards, "id" | "created_at" | "updated_at" | "user_id">,
