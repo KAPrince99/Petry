@@ -1,6 +1,7 @@
 "use client";
 
 import type { boards, columns } from "@/lib/supabase/models";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,8 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Filter } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useMemo, useState, type FormEvent } from "react";
 import { updateBoard } from "../../actions/boardActions";
 
 export type BoardViewBoard = boards & { columns: columns[] };
@@ -44,6 +46,25 @@ function colorFromBoard(color: string | undefined | null): string {
   return c;
 }
 
+type TaskPriority = "low" | "medium" | "high";
+
+type BoardTaskFilters = {
+  priority: TaskPriority[];
+  dueDate: string | null;
+};
+
+const PRIORITIES: TaskPriority[] = ["low", "medium", "high"];
+
+function defaultTaskFilters(): BoardTaskFilters {
+  return { priority: [], dueDate: null };
+}
+
+function activeTaskFilterCount(f: BoardTaskFilters): number {
+  const due =
+    typeof f.dueDate === "string" && f.dueDate.trim() !== "" ? 1 : 0;
+  return f.priority.length + due;
+}
+
 export function BoardView({ board }: BoardViewProps) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
@@ -52,6 +73,25 @@ export function BoardView({ board }: BoardViewProps) {
   const [color, setColor] = useState(DEFAULT_BOARD_COLOR);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<BoardTaskFilters>(defaultTaskFilters);
+
+  const handleFilterChange = useCallback(
+    <K extends keyof BoardTaskFilters>(key: K, value: BoardTaskFilters[K]) => {
+      setFilters((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
+  const clearFilters = useCallback(() => {
+    setFilters(defaultTaskFilters());
+  }, []);
+
+  const activeFilterCount = useMemo(
+    () => activeTaskFilterCount(filters),
+    [filters],
+  );
 
   const resetFormFromBoard = useCallback(() => {
     setTitle(board.title?.trim() || "");
@@ -104,7 +144,29 @@ export function BoardView({ board }: BoardViewProps) {
         <p className="mt-2 text-sm text-gray-600">
           {board.description?.trim() || "No description yet."}
         </p>
-        <div className="flex justify-end">
+        <div className="mt-4 flex flex-wrap justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() => setIsFilterOpen(true)}
+            aria-label={
+              activeFilterCount > 0
+                ? `Filter tasks, ${activeFilterCount} active`
+                : "Filter tasks"
+            }
+          >
+            <Filter className="mr-2 size-4 shrink-0" aria-hidden />
+            <span>Filter tasks</span>
+            {activeFilterCount > 0 ? (
+              <Badge
+                variant="secondary"
+                className="ml-2 min-w-5 justify-center px-1.5 tabular-nums"
+              >
+                {activeFilterCount}
+              </Badge>
+            ) : null}
+          </Button>
           <Button
             type="button"
             variant="outline"
@@ -185,6 +247,81 @@ export function BoardView({ board }: BoardViewProps) {
                 </Button>
               </div>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+          <DialogContent className="w-[95vw] max-w-[425px] mx-auto">
+            <DialogHeader>
+              <DialogTitle className="flex flex-wrap items-center gap-2">
+                Filter tasks
+                {activeFilterCount > 0 ? (
+                  <Badge
+                    variant="secondary"
+                    className="tabular-nums font-normal"
+                  >
+                    {activeFilterCount} active
+                  </Badge>
+                ) : null}
+              </DialogTitle>
+              <p className="text-sm text-gray-600">
+                Filter tasks by priority or due date.
+              </p>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <div className="flex flex-wrap gap-2">
+                  {PRIORITIES.map((priority) => (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        const newPriorities = filters.priority.includes(
+                          priority,
+                        )
+                          ? filters.priority.filter((p) => p !== priority)
+                          : [...filters.priority, priority];
+
+                        handleFilterChange("priority", newPriorities);
+                      }}
+                      key={priority}
+                      variant={
+                        filters.priority.includes(priority)
+                          ? "default"
+                          : "outline"
+                      }
+                      size="sm"
+                    >
+                      {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Due Date</Label>
+                <Input
+                  type="date"
+                  value={filters.dueDate || ""}
+                  onChange={(e) =>
+                    handleFilterChange("dueDate", e.target.value || null)
+                  }
+                />
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  onClick={clearFilters}
+                >
+                  Clear Filters
+                </Button>
+                <Button type="button" onClick={() => setIsFilterOpen(false)}>
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
