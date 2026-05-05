@@ -12,10 +12,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const hasClerkKey = Boolean(publishableKey);
+
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>{children}</ClerkProvider>
+        {hasClerkKey ? (
+          <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );
