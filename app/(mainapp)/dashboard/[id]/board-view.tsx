@@ -678,7 +678,7 @@ export function BoardView({ board }: BoardViewProps) {
 
   return (
     <>
-      <div className="rounded-lg border bg-white p-6 flex-1">
+      <div className="flex-1 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div
           className="mb-4 h-2 w-full max-w-xs rounded-full"
           style={{
@@ -989,7 +989,7 @@ export function BoardView({ board }: BoardViewProps) {
           items={sortableColumnIds}
           strategy={horizontalListSortingStrategy}
         >
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {board.columns.length === 0 ? (
               <div className="rounded-lg border bg-white p-4 text-sm text-gray-600">
                 No columns found for this board.

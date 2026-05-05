@@ -137,3 +137,26 @@ export async function createBoard(
     throw new Error("Failed to create board");
   }
 }
+
+// DELETE BOARD
+export async function deleteBoard(boardId: string): Promise<void> {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("boards")
+      .delete()
+      .eq("id", boardId)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error deleting board:", error);
+    throw new Error("Failed to delete board");
+  }
+}
