@@ -171,7 +171,7 @@ const TaskCard = memo(function TaskCard({
     <article
       ref={setNodeRef}
       style={style}
-      className={`rounded-md border border-gray-100 bg-gray-50/80 p-3 text-sm shadow-sm ${
+      className={`rounded-md border border-border bg-muted/50 p-3 text-sm shadow-sm ${
         sortableDisabled
           ? ""
           : "cursor-grab active:cursor-grabbing touch-none select-none"
@@ -180,7 +180,7 @@ const TaskCard = memo(function TaskCard({
       role="listitem"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-medium text-gray-900">{task.title}</p>
+        <p className="font-medium text-foreground">{task.title}</p>
         <span
           className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${priorityBadgeClasses(task.priority)}`}
         >
@@ -188,9 +188,9 @@ const TaskCard = memo(function TaskCard({
         </span>
       </div>
       {task.description?.trim() ? (
-        <p className="mt-1 line-clamp-2 text-gray-600">{task.description}</p>
+        <p className="mt-1 line-clamp-2 text-muted-foreground">{task.description}</p>
       ) : null}
-      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500">
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {task.due_date ? <span>Due {task.due_date.slice(0, 10)}</span> : null}
         {task.assignee?.trim() ? <span>{task.assignee}</span> : null}
       </div>
@@ -242,7 +242,7 @@ const ColumnSection = memo(function ColumnSection({
     <section
       ref={setNodeRef}
       style={style}
-      className={`flex max-h-[min(70vh,720px)] flex-col rounded-lg border bg-white ${
+      className={`flex max-h-[min(70vh,720px)] flex-col rounded-lg border border-border bg-card ${
         isDragging ? "opacity-70 shadow-lg" : ""
       }`}
       role="region"
@@ -251,10 +251,10 @@ const ColumnSection = memo(function ColumnSection({
       <div className="shrink-0 border-b px-4 py-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <h2 className="truncate font-semibold text-gray-900">
+            <h2 className="truncate font-semibold text-foreground">
               {column.title ?? "Untitled Column"}
             </h2>
-            <span className="shrink-0 text-xs tabular-nums text-gray-500">
+            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
               {activeFilterCount > 0
                 ? `${visibleTasks.length}/${total}`
                 : total}
@@ -264,7 +264,7 @@ const ColumnSection = memo(function ColumnSection({
             type="button"
             variant="ghost"
             size="icon"
-            className="size-7 shrink-0 cursor-grab text-gray-500 hover:text-gray-700 active:cursor-grabbing"
+            className="size-7 shrink-0 cursor-grab text-muted-foreground hover:text-foreground active:cursor-grabbing"
             aria-label={`Open options for ${column.title ?? "this column"}`}
             {...columnDndProps}
           >
@@ -284,9 +284,9 @@ const ColumnSection = memo(function ColumnSection({
           aria-label={`Tasks in ${column.title ?? "column"}`}
         >
           {total === 0 ? (
-            <p className="text-sm text-gray-500">No tasks yet.</p>
+            <p className="text-sm text-muted-foreground">No tasks yet.</p>
           ) : visibleTasks.length === 0 ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               No tasks match these filters.
             </p>
           ) : (
@@ -678,7 +678,7 @@ export function BoardView({ board }: BoardViewProps) {
 
   return (
     <>
-      <div className="flex-1 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="flex-1 rounded-xl border border-border bg-card p-6 shadow-sm">
         <div
           className="mb-4 h-2 w-full max-w-xs rounded-full"
           style={{
@@ -686,10 +686,10 @@ export function BoardView({ board }: BoardViewProps) {
           }}
           aria-hidden
         />
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-foreground">
           {board.title ?? "Untitled Board"}
         </h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-muted-foreground">
           {board.description?.trim() || "No description yet."}
         </p>
         <div className="mt-4 flex flex-wrap justify-end gap-2">
@@ -842,10 +842,10 @@ export function BoardView({ board }: BoardViewProps) {
                         key={hex}
                         type="button"
                         title={hex}
-                        className={`size-8 rounded-full ring-offset-2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 ${
+                        className={`size-8 rounded-full ring-offset-2 ring-offset-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                           color === hex
-                            ? "ring-2 ring-gray-900"
-                            : "ring-0 hover:ring-1 ring-gray-400"
+                            ? "ring-2 ring-foreground"
+                            : "ring-0 hover:ring-1 ring-muted-foreground/40"
                         }`}
                         style={{ backgroundColor: hex }}
                         onClick={() => setColor(hex)}
@@ -969,7 +969,7 @@ export function BoardView({ board }: BoardViewProps) {
 
       <div className="my-6 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-muted-foreground">
             <span className="font-medium">Total Tasks: </span>
             {board.columns.reduce((sum, col) => sum + col.tasks.length, 0)}
           </div>
@@ -991,7 +991,7 @@ export function BoardView({ board }: BoardViewProps) {
         >
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {board.columns.length === 0 ? (
-              <div className="rounded-lg border bg-white p-4 text-sm text-gray-600">
+              <div className="rounded-lg border border-border bg-background p-4 text-sm text-muted-foreground">
                 No columns found for this board.
               </div>
             ) : (
@@ -1010,9 +1010,9 @@ export function BoardView({ board }: BoardViewProps) {
         </SortableContext>
         <DragOverlay>
           {activeTask ? (
-            <article className="w-[280px] scale-[1.02] rounded-md border border-gray-200 bg-white p-3 text-sm shadow-2xl">
+            <article className="w-[280px] scale-[1.02] rounded-md border border-border bg-card p-3 text-sm shadow-2xl">
               <div className="flex items-start justify-between gap-2">
-                <p className="font-medium text-gray-900">{activeTask.title}</p>
+                <p className="font-medium text-foreground">{activeTask.title}</p>
                 <span
                   className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${priorityBadgeClasses(activeTask.priority)}`}
                 >
@@ -1021,8 +1021,8 @@ export function BoardView({ board }: BoardViewProps) {
               </div>
             </article>
           ) : activeColumn ? (
-            <section className="w-[280px] scale-[1.01] rounded-lg border bg-white p-3 shadow-2xl">
-              <h2 className="truncate font-semibold text-gray-900">
+            <section className="w-[280px] scale-[1.01] rounded-lg border border-border bg-card p-3 shadow-2xl">
+              <h2 className="truncate font-semibold text-foreground">
                 {activeColumn.title ?? "Untitled Column"}
               </h2>
             </section>

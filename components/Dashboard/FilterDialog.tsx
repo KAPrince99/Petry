@@ -29,7 +29,7 @@ export function FilterDialog({
       <DialogContent className="mx-auto w-[95vw] max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Filter Boards</DialogTitle>
-          <p className="text-sm text-gray-600">Filter boards by title or last activity date.</p>
+          <p className="text-sm text-muted-foreground">Filter boards by title or last activity date.</p>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">

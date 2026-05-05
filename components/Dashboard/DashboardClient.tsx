@@ -167,7 +167,7 @@ export function DashboardClient() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -183,18 +183,49 @@ export function DashboardClient() {
 
           <main className="flex-1 px-4 py-6 sm:px-6">
             <div className="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
-              <Card className="border-gray-200 shadow-sm"><CardContent className="p-4"><p className="text-xs font-medium text-gray-500">Total Boards</p><p className="mt-1 text-2xl font-semibold">{boards.length}</p></CardContent></Card>
-              <Card className="border-gray-200 shadow-sm"><CardContent className="p-4"><p className="text-xs font-medium text-gray-500">Active Projects</p><p className="mt-1 text-2xl font-semibold">{boards.length}</p></CardContent></Card>
-              <Card className="border-gray-200 shadow-sm"><CardContent className="p-4"><p className="text-xs font-medium text-gray-500">Workspace</p><p className="mt-1 text-2xl font-semibold">{user?.firstName ?? "Team"}</p></CardContent></Card>
-              <Card className="border-gray-200 shadow-sm"><CardContent className="p-4"><p className="text-xs font-medium text-gray-500">Status</p><p className="mt-1 text-2xl font-semibold">Ready</p></CardContent></Card>
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-4">
+                  <p className="text-xs font-medium text-muted-foreground">Total Boards</p>
+                  <p className="mt-1 text-2xl font-semibold">{boards.length}</p>
+                </CardContent>
+              </Card>
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-4">
+                  <p className="text-xs font-medium text-muted-foreground">Active Projects</p>
+                  <p className="mt-1 text-2xl font-semibold">{boards.length}</p>
+                </CardContent>
+              </Card>
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-4">
+                  <p className="text-xs font-medium text-muted-foreground">Workspace</p>
+                  <p className="mt-1 text-2xl font-semibold">{user?.firstName ?? "Team"}</p>
+                </CardContent>
+              </Card>
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-4">
+                  <p className="text-xs font-medium text-muted-foreground">Status</p>
+                  <p className="mt-1 text-2xl font-semibold">Ready</p>
+                </CardContent>
+              </Card>
             </div>
 
             {boards.length === 0 ? (
-              <Card className="cursor-pointer border-2 border-dashed border-gray-300 hover:border-blue-400" onClick={handleCreateBoard}>
-                <CardContent className="flex min-h-[220px] flex-col items-center justify-center gap-2"><Plus className="size-7 text-gray-400" /><p className="text-sm text-gray-600">Create your first board</p></CardContent>
+              <Card
+                className="cursor-pointer border-2 border-dashed border-muted-foreground/35 hover:border-primary/60"
+                onClick={handleCreateBoard}
+              >
+                <CardContent className="flex min-h-[220px] flex-col items-center justify-center gap-2">
+                  <Plus className="size-7 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">Create your first board</p>
+                </CardContent>
               </Card>
             ) : filteredBoards.length === 0 ? (
-              <div className="space-y-3 py-10 text-center"><p className="text-gray-600">No boards match your filters.</p><Button variant="outline" onClick={clearFilters}>Clear filters</Button></div>
+              <div className="space-y-3 py-10 text-center">
+                <p className="text-muted-foreground">No boards match your filters.</p>
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear filters
+                </Button>
+              </div>
             ) : (
               <DndContext sensors={sensors} collisionDetection={rectIntersection} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
                 <SortableContext items={filteredBoards.map((b) => b.id)} strategy={verticalListSortingStrategy}>
@@ -210,7 +241,12 @@ export function DashboardClient() {
                 </SortableContext>
                 <DragOverlay>
                   {activeBoard ? (
-                    <Card className="w-[320px] rounded-xl border border-gray-200 bg-white shadow-xl"><CardContent className="p-4"><CardTitle className="text-base">{activeBoard.title}</CardTitle><CardDescription className="line-clamp-1">{activeBoard.description ?? ""}</CardDescription></CardContent></Card>
+                    <Card className="w-[320px] rounded-xl border border-border bg-card shadow-xl">
+                      <CardContent className="p-4">
+                        <CardTitle className="text-base">{activeBoard.title}</CardTitle>
+                        <CardDescription className="line-clamp-1">{activeBoard.description ?? ""}</CardDescription>
+                      </CardContent>
+                    </Card>
                   ) : null}
                 </DragOverlay>
               </DndContext>

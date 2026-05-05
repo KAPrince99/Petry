@@ -23,21 +23,21 @@ export function Topbar({
   creating,
 }: TopbarProps) {
   return (
-    <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="flex flex-col gap-3 px-4 py-4 sm:px-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Boards</h1>
-            <p className="text-sm text-gray-500">Manage projects with clarity.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Boards</h1>
+            <p className="text-sm text-muted-foreground">Manage projects with clarity.</p>
           </div>
-          <Button onClick={onCreateBoard} disabled={creating} className="gap-2">
+          <Button onClick={onCreateBoard} disabled={creating} className="shrink-0 gap-2">
             <Plus className="size-4" />
             {creating ? "Creating..." : "Create Board"}
           </Button>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-sm">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
@@ -46,7 +46,7 @@ export function Topbar({
             />
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1">
+            <div className="flex items-center rounded-lg border border-border bg-background p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"

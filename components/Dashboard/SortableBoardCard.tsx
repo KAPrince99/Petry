@@ -27,7 +27,7 @@ export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: Sor
   return (
     <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} {...dndProps}>
       <Link href={getBoardRoute(board.id)}>
-        <Card className="group h-full rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+        <Card className="group h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div
@@ -42,7 +42,7 @@ export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: Sor
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="size-7 text-gray-500 hover:text-red-600"
+                  className="size-7 text-muted-foreground hover:text-destructive"
                   disabled={deleting}
                   onClick={(e) => {
                     e.preventDefault();
@@ -56,11 +56,11 @@ export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: Sor
             </div>
           </CardHeader>
           <CardContent className="p-5 pt-0">
-            <CardTitle className="mb-2 text-base group-hover:text-blue-600">{board.title}</CardTitle>
+            <CardTitle className="mb-2 text-base group-hover:text-primary">{board.title}</CardTitle>
             <CardDescription className="mb-4 line-clamp-2 text-sm">
               {board.description ?? "No description yet."}
             </CardDescription>
-            <div className="flex flex-col gap-1 text-xs text-gray-500 sm:flex-row sm:justify-between">
+            <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:justify-between">
               <span>Created {new Date(board.created_at).toLocaleDateString()}</span>
               <span>Updated {new Date(board.updated_at).toLocaleDateString()}</span>
             </div>

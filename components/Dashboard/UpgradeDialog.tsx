@@ -18,7 +18,7 @@ export function UpgradeDialog({ open, onOpenChange, onViewPlans }: UpgradeDialog
       <DialogContent className="mx-auto w-[95vw] max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Upgrade to create more boards</DialogTitle>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Free users can only create one board. Upgrade to create unlimited boards.
           </p>
         </DialogHeader>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,13 +17,15 @@ export default function RootLayout({
   const hasClerkKey = Boolean(publishableKey);
 
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
-        {hasClerkKey ? (
-          <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
-        ) : (
-          children
-        )}
+    <html lang="en" suppressHydrationWarning className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {hasClerkKey ? (
+            <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+          ) : (
+            children
+          )}
+        </ThemeProvider>
       </body>
     </html>
   );

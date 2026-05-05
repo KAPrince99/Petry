@@ -17,13 +17,13 @@ export default async function BoardPage({ params }: BoardPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-white text-gray-900">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
-        <aside className="hidden border-r border-gray-200 bg-gray-50/80 lg:flex lg:w-64 lg:flex-col">
-          <div className="border-b border-gray-200 px-5 py-5">
+        <aside className="hidden border-r border-border bg-muted/40 lg:flex lg:w-64 lg:flex-col dark:bg-muted/20">
+          <div className="border-b border-border px-5 py-5">
             <Link
               href="/"
-              className="text-2xl font-semibold tracking-tight text-gray-900"
+              className="text-2xl font-semibold tracking-tight text-foreground"
             >
               Petry
             </Link>
@@ -31,23 +31,23 @@ export default async function BoardPage({ params }: BoardPageProps) {
           <nav className="flex-1 space-y-1 px-3 py-4">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-900 shadow-sm ring-1 ring-gray-200"
+              className="flex items-center gap-2 rounded-lg bg-background px-3 py-2 text-sm font-medium text-foreground shadow-sm ring-1 ring-border"
             >
-              <FolderKanban className="size-4 text-gray-600" />
+              <FolderKanban className="size-4 text-muted-foreground" />
               Boards
             </Link>
             <button
               type="button"
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 transition-all hover:bg-white hover:text-gray-900"
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:bg-background hover:text-foreground"
             >
               <Settings className="size-4" />
               Settings
             </button>
           </nav>
-          <div className="border-t border-gray-200 px-4 py-4">
+          <div className="border-t border-border px-4 py-4">
             <button
               type="button"
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm text-gray-600 transition-all hover:bg-white hover:text-gray-900"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-all hover:bg-background hover:text-foreground"
             >
               <UserCircle2 className="size-5" />
               Profile
@@ -56,12 +56,12 @@ export default async function BoardPage({ params }: BoardPageProps) {
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6">
+          <header className="sticky top-0 z-10 border-b border-border bg-background/90 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-gray-300 hover:text-gray-900 hover:shadow"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:text-foreground hover:shadow"
                 >
                   <ArrowLeft className="size-4" />
                   Back to dashboard

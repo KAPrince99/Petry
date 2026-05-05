@@ -36,7 +36,7 @@ export function DeleteBoardDialog({
           <DialogTitle>Delete board</DialogTitle>
           <DialogDescription>
             This action cannot be undone. To confirm, type{" "}
-            <span className="font-semibold text-gray-900">{boardToDelete?.title ?? "this board"}</span> below.
+            <span className="font-semibold text-foreground">{boardToDelete?.title ?? "this board"}</span> below.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">

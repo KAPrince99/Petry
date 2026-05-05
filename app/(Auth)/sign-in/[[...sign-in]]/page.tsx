@@ -4,10 +4,10 @@ export default function SignInPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1 px-2 pt-2 text-center sm:text-left">
-        <h2 className="text-4xl font-semibold tracking-tight text-white">
+        <h2 className="text-4xl font-semibold tracking-tight text-foreground">
           Sign in
         </h2>
-        <p className="text-base text-zinc-400">Welcome back to Petry.</p>
+        <p className="text-base text-muted-foreground">Welcome back to Petry.</p>
       </div>
 
       <SignIn

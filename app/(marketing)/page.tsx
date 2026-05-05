@@ -10,6 +10,7 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 const FADE_UP = {
@@ -84,7 +85,7 @@ function BoardPreview() {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="rounded-2xl border bg-white p-3 shadow-sm sm:p-4"
+      className="rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
       aria-label="Petry board preview"
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -95,11 +96,11 @@ function BoardPreview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.08, duration: 0.35 }}
-            className="rounded-xl border bg-zinc-50/70 p-3"
+            className="rounded-xl border border-border bg-muted/50 p-3"
           >
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-zinc-900">{column.title}</h3>
-              <span className="rounded bg-white px-2 py-0.5 text-xs text-zinc-500 ring-1 ring-zinc-200">
+              <h3 className="text-sm font-semibold text-foreground">{column.title}</h3>
+              <span className="rounded bg-background px-2 py-0.5 text-xs text-muted-foreground ring-1 ring-border">
                 {column.tasks.length}
               </span>
             </div>
@@ -108,13 +109,13 @@ function BoardPreview() {
                 <motion.article
                   whileHover={{ y: -2 }}
                   key={task.id}
-                  className="rounded-lg border bg-white p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)]"
+                  className="rounded-lg border border-border bg-card p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] dark:shadow-none dark:hover:shadow-md"
                 >
                   <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <p className="text-xs font-medium text-zinc-800">{task.title}</p>
-                    <GripVertical className="size-3.5 text-zinc-300" />
+                    <p className="text-xs font-medium text-foreground">{task.title}</p>
+                    <GripVertical className="size-3.5 text-muted-foreground/50" />
                   </div>
-                  <span className="inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600">
+                  <span className="inline-flex rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
                     {task.tag}
                   </span>
                 </motion.article>
@@ -135,24 +136,24 @@ function HeroWorkspacePreview() {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="overflow-hidden rounded-2xl border bg-white shadow-sm"
+      className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
       aria-label="Petry dashboard and board preview"
     >
       <div className="grid lg:grid-cols-[260px_1fr]">
-        <aside className="border-b bg-zinc-50/70 p-4 lg:border-b-0 lg:border-r">
+        <aside className="border-b border-border bg-muted/50 p-4 lg:border-b-0 lg:border-r">
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-semibold text-zinc-900">Your Boards</p>
-            <span className="text-xs text-zinc-500">4</span>
+            <p className="text-sm font-semibold text-foreground">Your Boards</p>
+            <span className="text-xs text-muted-foreground">4</span>
           </div>
           <button
             type="button"
-            className="mb-3 inline-flex w-full items-center justify-center gap-2 rounded-md border bg-white px-3 py-2 text-xs font-medium text-zinc-700 shadow-sm"
+            className="mb-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium text-foreground shadow-sm"
           >
             <Plus className="size-3.5" />
             Create Board
           </button>
-          <div className="mb-3 rounded-md border bg-white px-2.5 py-2">
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
+          <div className="mb-3 rounded-md border border-border bg-background px-2.5 py-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Search className="size-3.5" />
               Search boards...
             </div>
@@ -164,8 +165,8 @@ function HeroWorkspacePreview() {
                   key={board}
                   className={`rounded-md px-2.5 py-2 text-xs ${
                     idx === 0
-                      ? "border bg-white font-medium text-zinc-900"
-                      : "text-zinc-600"
+                      ? "border border-border bg-background font-medium text-foreground"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {board}
@@ -178,8 +179,8 @@ function HeroWorkspacePreview() {
         <div className="p-3 sm:p-4">
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-zinc-900">Website Redesign</p>
-              <p className="text-xs text-zinc-500">Move tasks as work progresses</p>
+              <p className="text-sm font-semibold text-foreground">Website Redesign</p>
+              <p className="text-xs text-muted-foreground">Move tasks as work progresses</p>
             </div>
             <Button size="sm" variant="outline" className="h-8 text-xs">
               Add Task
@@ -193,11 +194,11 @@ function HeroWorkspacePreview() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.06, duration: 0.3 }}
-                className="rounded-xl border bg-zinc-50/70 p-3"
+                className="rounded-xl border border-border bg-muted/50 p-3"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-zinc-900">{column.title}</h3>
-                  <span className="rounded bg-white px-2 py-0.5 text-xs text-zinc-500 ring-1 ring-zinc-200">
+                  <h3 className="text-sm font-semibold text-foreground">{column.title}</h3>
+                  <span className="rounded bg-background px-2 py-0.5 text-xs text-muted-foreground ring-1 ring-border">
                     {column.tasks.length}
                   </span>
                 </div>
@@ -206,13 +207,13 @@ function HeroWorkspacePreview() {
                     <motion.article
                       whileHover={{ y: -2 }}
                       key={task.id}
-                      className="rounded-lg border bg-white p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)]"
+                      className="rounded-lg border border-border bg-card p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] dark:shadow-none dark:hover:shadow-md"
                     >
                       <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <p className="text-xs font-medium text-zinc-800">{task.title}</p>
-                        <GripVertical className="size-3.5 text-zinc-300" />
+                        <p className="text-xs font-medium text-foreground">{task.title}</p>
+                        <GripVertical className="size-3.5 text-muted-foreground/50" />
                       </div>
-                      <span className="inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600">
+                      <span className="inline-flex rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
                         {task.tag}
                       </span>
                     </motion.article>
@@ -229,12 +230,13 @@ function HeroWorkspacePreview() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
+    <div className="min-h-screen bg-background text-foreground">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
         <Link href="/" className="text-lg font-semibold tracking-tight">
           Petry
         </Link>
         <div className="flex items-center gap-2">
+          <ThemeToggle variant="segmented" />
           <Button variant="ghost" asChild>
             <Link href="/sign-in">Sign in</Link>
           </Button>
@@ -255,13 +257,13 @@ export default function Home() {
             transition={{ duration: 0.45 }}
             className="mx-auto max-w-3xl text-center"
           >
-            <p className="mb-4 text-sm font-medium text-zinc-500">
+            <p className="mb-4 text-sm font-medium text-muted-foreground">
               A minimal Kanban workspace
             </p>
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               Manage your work. Without the clutter.
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-zinc-600 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
               Petry gives teams a clean, focused way to plan, track, and ship.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -285,7 +287,7 @@ export default function Home() {
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
               Product Preview
             </h2>
-            <p className="mt-2 text-zinc-600">
+            <p className="mt-2 text-muted-foreground">
               A board experience built for fast drag-and-drop and clear focus.
             </p>
           </div>
@@ -305,10 +307,10 @@ export default function Home() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: idx * 0.06 }}
-                className="rounded-xl border bg-white p-5 shadow-sm"
+                className="rounded-xl border border-border bg-card p-5 shadow-sm"
               >
                 <h3 className="font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-sm text-zinc-600">{feature.description}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{feature.description}</p>
               </motion.article>
             ))}
           </div>
@@ -321,7 +323,7 @@ export default function Home() {
             </h2>
             <ol className="mt-5 space-y-3">
               {STEPS.map((step, idx) => (
-                <li key={step} className="flex items-start gap-3 text-zinc-700">
+                <li key={step} className="flex items-start gap-3 text-foreground/90">
                   <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold">
                     {idx + 1}
                   </span>
@@ -336,8 +338,8 @@ export default function Home() {
             </h2>
             <ul className="mt-5 space-y-3">
               {BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 text-zinc-700">
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-zinc-500" />
+                <li key={benefit} className="flex items-start gap-3 text-foreground/90">
+                  <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -345,11 +347,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-2xl border bg-zinc-50 px-6 py-10 text-center sm:px-10">
+        <section className="rounded-2xl border border-border bg-muted/50 px-6 py-10 text-center sm:px-10">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Ready to simplify project management?
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-zinc-600">
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             Start with a clean board and keep momentum from planning to done.
           </p>
           <div className="mt-6 flex justify-center">
@@ -362,14 +364,14 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <footer className="border-t border-border">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p>© {new Date().getFullYear()} Petry</p>
           <div className="flex items-center gap-4">
-            <Link href="/sign-in" className="hover:text-zinc-800">
+            <Link href="/sign-in" className="hover:text-foreground">
               Sign in
             </Link>
-            <Link href="/dashboard" className="hover:text-zinc-800">
+            <Link href="/dashboard" className="hover:text-foreground">
               Dashboard
             </Link>
           </div>
