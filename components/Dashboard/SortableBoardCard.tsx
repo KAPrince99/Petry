@@ -6,18 +6,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getBoardRoute } from "@/lib/dashboard/constants";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useDashboardUiStore } from "@/store/useDashboardUiStore";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 import type { BoardItem } from "./types";
 
-type SortableBoardCardProps = {
+export type SortableBoardCardProps = {
   board: BoardItem;
   isHydrated: boolean;
-  onDelete: (board: BoardItem) => void;
   deleting: boolean;
 };
 
-export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: SortableBoardCardProps) {
+export const SortableBoardCard = memo(function SortableBoardCard({
+  board,
+  isHydrated,
+  deleting,
+}: SortableBoardCardProps) {
+  const openDeleteBoard = useDashboardUiStore((s) => s.openDeleteBoard);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: board.id,
     disabled: !isHydrated,
@@ -47,7 +53,7 @@ export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: Sor
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onDelete(board);
+                    openDeleteBoard(board);
                   }}
                 >
                   <Trash2 className="size-4" />
@@ -69,4 +75,4 @@ export function SortableBoardCard({ board, isHydrated, onDelete, deleting }: Sor
       </Link>
     </div>
   );
-}
+});

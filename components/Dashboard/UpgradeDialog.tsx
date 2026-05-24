@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -5,16 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDashboardUiStore } from "@/store/useDashboardUiStore";
+import { useRouter } from "next/navigation";
+import { memo } from "react";
 
-type UpgradeDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onViewPlans: () => void;
-};
+export const UpgradeDialog = memo(function UpgradeDialog() {
+  const router = useRouter();
+  const open = useDashboardUiStore((s) => s.upgradeDialogOpen);
+  const setUpgradeDialogOpen = useDashboardUiStore((s) => s.setUpgradeDialogOpen);
 
-export function UpgradeDialog({ open, onOpenChange, onViewPlans }: UpgradeDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setUpgradeDialogOpen}>
       <DialogContent className="mx-auto w-[95vw] max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Upgrade to create more boards</DialogTitle>
@@ -23,12 +26,12 @@ export function UpgradeDialog({ open, onOpenChange, onViewPlans }: UpgradeDialog
           </p>
         </DialogHeader>
         <div className="flex justify-end space-x-4 pt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => setUpgradeDialogOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onViewPlans}>View plans</Button>
+          <Button onClick={() => router.push("/")}>View plans</Button>
         </div>
       </DialogContent>
     </Dialog>
   );
-}
+});
