@@ -10,35 +10,27 @@ import {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DASHBOARD_QUERY_KEYS } from "@/lib/dashboard/constants";
+import { boardQueryOptions } from "@/lib/react-query/board-queries";
+import {
+  selectActiveFilterCount,
+  useBoardUiStore,
+} from "@/store/useBoardUiStore";
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
   useSyncExternalStore,
   type FormEvent,
 } from "react";
 import { updateBoard } from "@/app/(mainapp)/actions/boardActions";
-import { getBoardWithColumns } from "@/app/(mainapp)/actions/bothActions";
 import { createTaskForBoard } from "@/app/(mainapp)/actions/taskActions";
 import { BoardDetailsCard } from "./BoardDetailsCard";
 import { BoardKanban } from "./BoardKanban";
-import { BoardTaskFilterDialog } from "./BoardTaskFilterDialog";
 import { BoardTaskStats } from "./BoardTaskStats";
-import { CreateTaskDialog } from "./CreateTaskDialog";
-import { DEFAULT_BOARD_COLOR } from "./constants";
-import { EditBoardDialog } from "./EditBoardDialog";
-import type {
-  BoardColumnWithTasks,
-  BoardTaskFilters,
-  BoardViewProps,
-} from "./types";
+import type { BoardColumnWithTasks, BoardViewProps } from "./types";
 import { useBoardDragHandlers } from "./useBoardDragHandlers";
-import {
-  activeTaskFilterCount,
-  colorFromBoard,
-  defaultTaskFilters,
-  taskMatchesFilters,
-} from "./utils";
+import { taskMatchesFilters } from "./utils";
 
 function mutationErrorMessage(error: unknown, fallback: string): string | null {
   if (!error) return null;
@@ -47,6 +39,16 @@ function mutationErrorMessage(error: unknown, fallback: string): string | null {
 
 export function BoardView({ board }: BoardViewProps) {
   const queryClient = useQueryClient();
+  const filters = useBoardUiStore((s) => s.filters);
+  const activeFilterCount = useBoardUiStore(selectActiveFilterCount);
+  const editTitle = useBoardUiStore((s) => s.editTitle);
+  const editDescription = useBoardUiStore((s) => s.editDescription);
+  const editColor = useBoardUiStore((s) => s.editColor);
+  const closeEdit = useBoardUiStore((s) => s.closeEdit);
+  const closeCreateTask = useBoardUiStore((s) => s.closeCreateTask);
+  const setBoardScope = useBoardUiStore((s) => s.setBoardScope);
+  const resetBoardUi = useBoardUiStore((s) => s.resetBoardUi);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
@@ -60,18 +62,16 @@ export function BoardView({ board }: BoardViewProps) {
   );
 
   const { data: boardData } = useQuery({
-    queryKey: DASHBOARD_QUERY_KEYS.board(board.id),
-    queryFn: async () => {
-      const result = await getBoardWithColumns(board.id);
-      if (!result) {
-        throw new Error("Board not found");
-      }
-      return result;
-    },
+    ...boardQueryOptions(board.id),
     initialData: board,
   });
 
   const currentBoard = boardData ?? board;
+
+  useEffect(() => {
+    setBoardScope(board.id);
+    return () => resetBoardUi();
+  }, [board.id, resetBoardUi, setBoardScope]);
 
   const [boardColumns, setBoardColumns] = useState<BoardColumnWithTasks[]>(
     currentBoard.columns,
@@ -88,15 +88,6 @@ export function BoardView({ board }: BoardViewProps) {
     () => false,
   );
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState(DEFAULT_BOARD_COLOR);
-
-  const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<BoardTaskFilters>(defaultTaskFilters);
-
   if (
     currentBoard.id !== columnsSnapshot.boardId ||
     currentBoard.columns !== columnsSnapshot.columns
@@ -110,26 +101,6 @@ export function BoardView({ board }: BoardViewProps) {
     setActiveColumnId(null);
   }
 
-  const handleFilterChange = useCallback(
-    <K extends keyof BoardTaskFilters>(key: K, value: BoardTaskFilters[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
-    },
-    [],
-  );
-
-  const clearFilters = useCallback(() => {
-    setFilters(defaultTaskFilters());
-  }, []);
-
-  const closeFilterDialog = useCallback(() => {
-    setIsFilterOpen(false);
-  }, []);
-
-  const activeFilterCount = useMemo(
-    () => activeTaskFilterCount(filters),
-    [filters],
-  );
-
   const filteredColumns = useMemo(
     () =>
       boardColumns.map((column) => ({
@@ -139,26 +110,6 @@ export function BoardView({ board }: BoardViewProps) {
       })),
     [boardColumns, filters],
   );
-
-  const resetFormFromBoard = useCallback(() => {
-    setTitle(currentBoard.title?.trim() || "");
-    setDescription(currentBoard.description?.trim() || "");
-    setColor(colorFromBoard(currentBoard.color));
-  }, [currentBoard.title, currentBoard.description, currentBoard.color]);
-
-  const handleEditOpenChange = useCallback(
-    (open: boolean) => {
-      setEditOpen(open);
-      if (open) {
-        resetFormFromBoard();
-      }
-    },
-    [resetFormFromBoard],
-  );
-
-  const handleCreateTaskOpenChange = useCallback((open: boolean) => {
-    setIsCreateTaskOpen(open);
-  }, []);
 
   const { handleDragStart, handleDragOver, handleDragEnd, handleDragCancel } =
     useBoardDragHandlers({
@@ -206,7 +157,7 @@ export function BoardView({ board }: BoardViewProps) {
     }) => updateBoard(board.id, patch),
     onSuccess: async () => {
       await invalidateBoardQueries();
-      setEditOpen(false);
+      closeEdit();
     },
   });
 
@@ -222,7 +173,7 @@ export function BoardView({ board }: BoardViewProps) {
       await queryClient.invalidateQueries({
         queryKey: DASHBOARD_QUERY_KEYS.board(board.id),
       });
-      setIsCreateTaskOpen(false);
+      closeCreateTask();
     },
   });
 
@@ -240,12 +191,18 @@ export function BoardView({ board }: BoardViewProps) {
       e.preventDefault();
       resetUpdateBoardError();
       saveBoard({
-        title: title.trim() || "Untitled Board",
-        description: description.trim() ? description.trim() : null,
-        color,
+        title: editTitle.trim() || "Untitled Board",
+        description: editDescription.trim() ? editDescription.trim() : null,
+        color: editColor,
       });
     },
-    [color, description, resetUpdateBoardError, saveBoard, title],
+    [
+      editColor,
+      editDescription,
+      editTitle,
+      resetUpdateBoardError,
+      saveBoard,
+    ],
   );
 
   const handleCreateTask = useCallback(
@@ -281,66 +238,17 @@ export function BoardView({ board }: BoardViewProps) {
     [createTask, resetCreateTaskError],
   );
 
-  const boardActions = useMemo(
-    () => (
-      <>
-        <BoardTaskFilterDialog
-          open={isFilterOpen}
-          onOpenChange={setIsFilterOpen}
-          filters={filters}
-          activeFilterCount={activeFilterCount}
-          onFilterChange={handleFilterChange}
-          onClearFilters={clearFilters}
-          onApply={closeFilterDialog}
-        />
-        <EditBoardDialog
-          open={editOpen}
-          onOpenChange={handleEditOpenChange}
-          title={title}
-          description={description}
-          color={color}
-          submitError={submitError}
-          isPending={isPending}
-          onTitleChange={setTitle}
-          onDescriptionChange={setDescription}
-          onColorChange={setColor}
-          onSubmit={handleUpdateBoard}
-        />
-        <CreateTaskDialog
-          open={isCreateTaskOpen}
-          onOpenChange={handleCreateTaskOpenChange}
-          taskSubmitError={taskSubmitError}
-          isTaskPending={isTaskPending}
-          onSubmit={handleCreateTask}
-        />
-      </>
-    ),
-    [
-      activeFilterCount,
-      clearFilters,
-      closeFilterDialog,
-      color,
-      description,
-      editOpen,
-      filters,
-      handleCreateTask,
-      handleCreateTaskOpenChange,
-      handleEditOpenChange,
-      handleFilterChange,
-      handleUpdateBoard,
-      isCreateTaskOpen,
-      isFilterOpen,
-      isPending,
-      isTaskPending,
-      submitError,
-      taskSubmitError,
-      title,
-    ],
-  );
-
   return (
     <>
-      <BoardDetailsCard board={currentBoard} actions={boardActions} />
+      <BoardDetailsCard
+        board={currentBoard}
+        submitError={submitError}
+        isPending={isPending}
+        onUpdateBoard={handleUpdateBoard}
+        taskSubmitError={taskSubmitError}
+        isTaskPending={isTaskPending}
+        onCreateTask={handleCreateTask}
+      />
       <BoardTaskStats board={currentBoard} />
       <BoardKanban
         filteredColumns={filteredColumns}

@@ -12,38 +12,43 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useBoardUiStore } from "@/store/useBoardUiStore";
 import { memo, type FormEvent } from "react";
 import { BOARD_COLOR_SWATCHES } from "./constants";
 
+type EditBoardDialogBoard = {
+  title?: string | null;
+  description?: string | null;
+  color?: string | null;
+};
+
 export type EditBoardDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description: string;
-  color: string;
+  board: EditBoardDialogBoard;
   submitError: string | null;
   isPending: boolean;
-  onTitleChange: (value: string) => void;
-  onDescriptionChange: (value: string) => void;
-  onColorChange: (value: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export const EditBoardDialog = memo(function EditBoardDialog({
-  open,
-  onOpenChange,
-  title,
-  description,
-  color,
+  board,
   submitError,
   isPending,
-  onTitleChange,
-  onDescriptionChange,
-  onColorChange,
   onSubmit,
 }: EditBoardDialogProps) {
+  const editOpen = useBoardUiStore((s) => s.editOpen);
+  const editTitle = useBoardUiStore((s) => s.editTitle);
+  const editDescription = useBoardUiStore((s) => s.editDescription);
+  const editColor = useBoardUiStore((s) => s.editColor);
+  const handleEditOpenChange = useBoardUiStore((s) => s.handleEditOpenChange);
+  const setEditTitle = useBoardUiStore((s) => s.setEditTitle);
+  const setEditDescription = useBoardUiStore((s) => s.setEditDescription);
+  const setEditColor = useBoardUiStore((s) => s.setEditColor);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={editOpen}
+      onOpenChange={(open) => handleEditOpenChange(open, board)}
+    >
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="cursor-pointer">
           Edit board
@@ -61,8 +66,8 @@ export const EditBoardDialog = memo(function EditBoardDialog({
             <Label htmlFor="boardTitle">Board title</Label>
             <Input
               id="boardTitle"
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
               placeholder="Board title"
               autoComplete="off"
             />
@@ -71,8 +76,8 @@ export const EditBoardDialog = memo(function EditBoardDialog({
             <Label htmlFor="boardDescription">Description</Label>
             <Textarea
               id="boardDescription"
-              value={description}
-              onChange={(e) => onDescriptionChange(e.target.value)}
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
               placeholder="Optional description"
               rows={3}
               className="min-h-[80px] resize-y"
@@ -87,13 +92,13 @@ export const EditBoardDialog = memo(function EditBoardDialog({
                   type="button"
                   title={hex}
                   className={`size-8 rounded-full ring-offset-2 ring-offset-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    color === hex
+                    editColor === hex
                       ? "ring-2 ring-foreground"
                       : "ring-0 ring-muted-foreground/40 hover:ring-1"
                   }`}
                   style={{ backgroundColor: hex }}
-                  onClick={() => onColorChange(hex)}
-                  aria-pressed={color === hex}
+                  onClick={() => setEditColor(hex)}
+                  aria-pressed={editColor === hex}
                 />
               ))}
             </div>
@@ -107,7 +112,7 @@ export const EditBoardDialog = memo(function EditBoardDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleEditOpenChange(false)}
               disabled={isPending}
             >
               Cancel

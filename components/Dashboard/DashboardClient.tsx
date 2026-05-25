@@ -11,12 +11,14 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DASHBOARD_QUERY_KEYS } from "@/lib/dashboard/constants";
+import { boardsQueryOptions } from "@/lib/react-query/board-queries";
 import { useDashboardUiStore } from "@/store/useDashboardUiStore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { deleteBoard, getBoards } from "@/app/(mainapp)/actions/boardActions";
+import { deleteBoard } from "@/app/(mainapp)/actions/boardActions";
 import { createBoardColumns } from "@/app/(mainapp)/actions/bothActions";
 import { CreateFirstBoardCard } from "./CreateFirstBoardCard";
 import { DashboardBoardsDnD } from "./DashboardBoardsDnD";
+import { DashboardLoadingSkeleton } from "./DashboardLoadingSkeleton";
 import { DashboardStatsGrid } from "./DashboardStatsGrid";
 import { NoBoardsMatchFilters } from "./NoBoardsMatchFilters";
 import { Topbar } from "./Topbar";
@@ -24,7 +26,7 @@ import { UpgradeDialog } from "./UpgradeDialog";
 import { DeleteBoardDialog } from "./DeleteBoardDialog";
 import type { BoardItem } from "./types";
 
-const EMPTY_BOARDS: Awaited<ReturnType<typeof getBoards>> = [];
+const EMPTY_BOARDS: BoardItem[] = [];
 const IS_FREE_PLAN = false;
 const FREE_BOARD_LIMIT = 1;
 
@@ -44,11 +46,9 @@ export function DashboardClient() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   );
 
-  const { data } = useQuery({
-    queryKey: DASHBOARD_QUERY_KEYS.boards,
-    queryFn: getBoards,
-  });
+  const { data, isPending } = useQuery(boardsQueryOptions());
   const boards = data ?? EMPTY_BOARDS;
+  const isBoardsLoading = isPending && data === undefined;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -77,7 +77,7 @@ export function DashboardClient() {
     [boards.length, user?.firstName],
   );
 
-  const { mutate: createBoard, isPending } = useMutation({
+  const { mutate: createBoard, isPending: isCreatingBoard } = useMutation({
     mutationFn: async () =>
       createBoardColumns({
         title: "Untitled Board",
@@ -182,26 +182,32 @@ export function DashboardClient() {
 
   return (
     <>
-      <Topbar onCreateBoard={handleCreateBoard} creating={isPending} />
+      <Topbar onCreateBoard={handleCreateBoard} creating={isCreatingBoard} />
 
       <main className="flex-1 px-4 py-6 sm:px-6">
-        <DashboardStatsGrid stats={dashboardStats} />
-
-        {boards.length === 0 ? (
-          <CreateFirstBoardCard onCreateBoard={handleCreateBoard} />
-        ) : filteredBoards.length === 0 ? (
-          <NoBoardsMatchFilters />
+        {isBoardsLoading ? (
+          <DashboardLoadingSkeleton />
         ) : (
-          <DashboardBoardsDnD
-            boards={filteredBoards}
-            isHydrated={isHydrated}
-            activeBoard={activeBoard}
-            deleting={isDeletingBoard}
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-          />
+          <>
+            <DashboardStatsGrid stats={dashboardStats} />
+
+            {boards.length === 0 ? (
+              <CreateFirstBoardCard onCreateBoard={handleCreateBoard} />
+            ) : filteredBoards.length === 0 ? (
+              <NoBoardsMatchFilters />
+            ) : (
+              <DashboardBoardsDnD
+                boards={filteredBoards}
+                isHydrated={isHydrated}
+                activeBoard={activeBoard}
+                deleting={isDeletingBoard}
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+              />
+            )}
+          </>
         )}
       </main>
 

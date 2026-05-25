@@ -4,12 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBoardRoute } from "@/lib/dashboard/constants";
+import { boardQueryOptions } from "@/lib/react-query/board-queries";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDashboardUiStore } from "@/store/useDashboardUiStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import type { BoardItem } from "./types";
 
 export type SortableBoardCardProps = {
@@ -23,7 +25,14 @@ export const SortableBoardCard = memo(function SortableBoardCard({
   isHydrated,
   deleting,
 }: SortableBoardCardProps) {
+  const queryClient = useQueryClient();
   const openDeleteBoard = useDashboardUiStore((s) => s.openDeleteBoard);
+  const prefetchBoard = useCallback(
+    (boardId: string) => {
+      void queryClient.prefetchQuery(boardQueryOptions(boardId));
+    },
+    [queryClient],
+  );
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: board.id,
     disabled: !isHydrated,
@@ -32,7 +41,11 @@ export const SortableBoardCard = memo(function SortableBoardCard({
 
   return (
     <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} {...dndProps}>
-      <Link href={getBoardRoute(board.id)}>
+      <Link
+        href={getBoardRoute(board.id)}
+        onMouseEnter={() => prefetchBoard(board.id)}
+        onFocus={() => prefetchBoard(board.id)}
+      >
         <Card className="group h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">

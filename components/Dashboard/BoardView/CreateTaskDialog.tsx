@@ -19,32 +19,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useBoardUiStore } from "@/store/useBoardUiStore";
 import { Plus } from "lucide-react";
 import { memo, type FormEvent } from "react";
 import { PRIORITIES } from "./constants";
 
 export type CreateTaskDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   taskSubmitError: string | null;
   isTaskPending: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export const CreateTaskDialog = memo(function CreateTaskDialog({
-  open,
-  onOpenChange,
   taskSubmitError,
   isTaskPending,
   onSubmit,
 }: CreateTaskDialogProps) {
+  const createTaskOpen = useBoardUiStore((s) => s.createTaskOpen);
+  const setCreateTaskOpen = useBoardUiStore((s) => s.setCreateTaskOpen);
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(nextOpen) => {
-        onOpenChange(nextOpen);
-      }}
-    >
+    <Dialog open={createTaskOpen} onOpenChange={setCreateTaskOpen}>
       <DialogTrigger asChild>
         <Button type="button" className="cursor-pointer">
           <Plus />

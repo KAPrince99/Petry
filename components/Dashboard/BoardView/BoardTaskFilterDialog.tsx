@@ -12,35 +12,25 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  selectActiveFilterCount,
+  useBoardUiStore,
+} from "@/store/useBoardUiStore";
 import { Filter } from "lucide-react";
 import { memo } from "react";
 import { PRIORITIES } from "./constants";
-import type { BoardTaskFilters } from "./types";
 
-export type BoardTaskFilterDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  filters: BoardTaskFilters;
-  activeFilterCount: number;
-  onFilterChange: <K extends keyof BoardTaskFilters>(
-    key: K,
-    value: BoardTaskFilters[K],
-  ) => void;
-  onClearFilters: () => void;
-  onApply: () => void;
-};
+export const BoardTaskFilterDialog = memo(function BoardTaskFilterDialog() {
+  const filterOpen = useBoardUiStore((s) => s.filterOpen);
+  const filters = useBoardUiStore((s) => s.filters);
+  const activeFilterCount = useBoardUiStore(selectActiveFilterCount);
+  const setFilterOpen = useBoardUiStore((s) => s.setFilterOpen);
+  const setFilter = useBoardUiStore((s) => s.setFilter);
+  const clearFilters = useBoardUiStore((s) => s.clearFilters);
+  const closeFilter = useBoardUiStore((s) => s.closeFilter);
 
-export const BoardTaskFilterDialog = memo(function BoardTaskFilterDialog({
-  open,
-  onOpenChange,
-  filters,
-  activeFilterCount,
-  onFilterChange,
-  onClearFilters,
-  onApply,
-}: BoardTaskFilterDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={filterOpen} onOpenChange={setFilterOpen}>
       <DialogTrigger asChild>
         <Button
           type="button"
@@ -88,7 +78,7 @@ export const BoardTaskFilterDialog = memo(function BoardTaskFilterDialog({
                     const newPriorities = filters.priority.includes(priority)
                       ? filters.priority.filter((p) => p !== priority)
                       : [...filters.priority, priority];
-                    onFilterChange("priority", newPriorities);
+                    setFilter("priority", newPriorities);
                   }}
                   variant={filters.priority.includes(priority) ? "default" : "outline"}
                   size="sm"
@@ -103,14 +93,14 @@ export const BoardTaskFilterDialog = memo(function BoardTaskFilterDialog({
             <Input
               type="date"
               value={filters.dueDate || ""}
-              onChange={(e) => onFilterChange("dueDate", e.target.value || null)}
+              onChange={(e) => setFilter("dueDate", e.target.value || null)}
             />
           </div>
           <div className="flex justify-between pt-4">
-            <Button type="button" variant="outline" onClick={onClearFilters}>
+            <Button type="button" variant="outline" onClick={clearFilters}>
               Clear Filters
             </Button>
-            <Button type="button" onClick={onApply}>
+            <Button type="button" onClick={closeFilter}>
               Apply Filters
             </Button>
           </div>
