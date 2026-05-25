@@ -1,6 +1,9 @@
 import { Sidebar } from "@/components/Dashboard/Sidebar";
 import type { ReactNode } from "react";
 
+/** Clerk auth and Supabase reads use headers(); must not static-prerender at build. */
+export const dynamic = "force-dynamic";
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
