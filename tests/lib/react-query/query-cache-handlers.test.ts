@@ -5,11 +5,11 @@ import { describe, expect, it } from "vitest";
 function mockQuery(partial: {
   data: unknown;
   skipErrorToast?: boolean;
-}): Query {
+}): Query<unknown, unknown, unknown, readonly unknown[]> {
   return {
     state: { data: partial.data },
     meta: partial.skipErrorToast ? { skipErrorToast: true } : {},
-  } as Query;
+  } as Query<unknown, unknown, unknown, readonly unknown[]>;
 }
 
 describe("shouldToastQueryError", () => {
