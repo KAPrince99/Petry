@@ -1,5 +1,6 @@
 "use client";
 
+import { toastError, toastSuccess } from "@/lib/toast";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -16,6 +17,8 @@ export default function FileUploader() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
     setFile(selectedFile);
+    setStatus("idle");
+    setUploadProgress(0);
   };
 
   const handleFileUpload = async () => {
@@ -39,11 +42,14 @@ export default function FileUploader() {
       });
       setStatus("success");
       setUploadProgress(100);
+      toastSuccess("File uploaded successfully", "file-upload-success");
     } catch (error) {
       setStatus("error");
       setUploadProgress(0);
+      toastError(error, "Upload failed. Please try again.", "file-upload-error");
     }
   };
+
   return (
     <div className="space-y-2">
       <Input
@@ -78,13 +84,6 @@ export default function FileUploader() {
             "Upload"
           )}
         </Button>
-      )}
-      {status === "success" && (
-        <p className="text-sm text-green-600">File uploaded successfully!</p>
-      )}
-
-      {status === "error" && (
-        <p className="text-sm text-red-600">Upload failed. Please try again.</p>
       )}
     </div>
   );

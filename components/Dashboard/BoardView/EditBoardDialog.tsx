@@ -24,14 +24,12 @@ type EditBoardDialogBoard = {
 
 export type EditBoardDialogProps = {
   board: EditBoardDialogBoard;
-  submitError: string | null;
   isPending: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export const EditBoardDialog = memo(function EditBoardDialog({
   board,
-  submitError,
   isPending,
   onSubmit,
 }: EditBoardDialogProps) {
@@ -103,11 +101,6 @@ export const EditBoardDialog = memo(function EditBoardDialog({
               ))}
             </div>
           </div>
-          {submitError ? (
-            <p className="text-sm text-destructive" role="alert">
-              {submitError}
-            </p>
-          ) : null}
           <div className="flex justify-end gap-2">
             <Button
               type="button"

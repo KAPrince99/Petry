@@ -7,6 +7,9 @@ export function boardsQueryOptions() {
     queryKey: DASHBOARD_QUERY_KEYS.boards,
     queryFn: getBoards,
     staleTime: 60_000,
+    meta: {
+      errorMessage: "Could not load your boards. Please try again.",
+    },
   };
 }
 
@@ -14,6 +17,9 @@ export function boardQueryOptions(boardId: string) {
   return {
     queryKey: DASHBOARD_QUERY_KEYS.board(boardId),
     staleTime: 60_000,
+    meta: {
+      errorMessage: "Could not load this board. Please try again.",
+    },
     queryFn: async () => {
       const board = await getBoardWithColumns(boardId);
       if (!board) {

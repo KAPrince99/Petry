@@ -18,19 +18,15 @@ describe("BoardDetailsCard", () => {
   function renderCard(
     board = createBoard(),
     overrides: Partial<{
-      submitError: string | null;
       isPending: boolean;
-      taskSubmitError: string | null;
       isTaskPending: boolean;
     }> = {},
   ) {
     return render(
       <BoardDetailsCard
         board={board}
-        submitError={null}
         isPending={false}
         onUpdateBoard={onUpdateBoard}
-        taskSubmitError={null}
         isTaskPending={false}
         onCreateTask={onCreateTask}
         {...overrides}

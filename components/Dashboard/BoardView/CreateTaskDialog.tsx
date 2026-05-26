@@ -25,13 +25,11 @@ import { memo, type FormEvent } from "react";
 import { PRIORITIES } from "./constants";
 
 export type CreateTaskDialogProps = {
-  taskSubmitError: string | null;
   isTaskPending: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export const CreateTaskDialog = memo(function CreateTaskDialog({
-  taskSubmitError,
   isTaskPending,
   onSubmit,
 }: CreateTaskDialogProps) {
@@ -96,12 +94,7 @@ export const CreateTaskDialog = memo(function CreateTaskDialog({
             <Label>Due Date</Label>
             <Input type="date" id="dueDate" name="dueDate" />
           </div>
-          <div className="flex justify-end space-x-2 pt-4">
-            {taskSubmitError ? (
-              <p className="w-full text-sm text-destructive" role="alert">
-                {taskSubmitError}
-              </p>
-            ) : null}
+          <div className="flex justify-end pt-4">
             <Button type="submit" disabled={isTaskPending}>
               {isTaskPending ? "Creating..." : "Create Task"}
             </Button>

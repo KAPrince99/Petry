@@ -16,6 +16,11 @@ vi.mock("@/components/Dashboard/BoardView/BoardKanban", () => ({
   BoardKanban: () => <div data-testid="board-kanban" />,
 }));
 
+vi.mock("@/lib/toast", () => ({
+  toastSuccess: vi.fn(),
+  toastError: vi.fn(),
+}));
+
 describe("BoardView", () => {
   it("renders board details, stats, and kanban", () => {
     const board = createBoard({

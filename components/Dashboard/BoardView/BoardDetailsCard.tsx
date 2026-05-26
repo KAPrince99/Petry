@@ -9,20 +9,16 @@ import type { BoardViewBoard } from "./types";
 
 export type BoardDetailsCardProps = {
   board: BoardViewBoard;
-  submitError: string | null;
   isPending: boolean;
   onUpdateBoard: (e: FormEvent<HTMLFormElement>) => void;
-  taskSubmitError: string | null;
   isTaskPending: boolean;
   onCreateTask: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export const BoardDetailsCard = memo(function BoardDetailsCard({
   board,
-  submitError,
   isPending,
   onUpdateBoard,
-  taskSubmitError,
   isTaskPending,
   onCreateTask,
 }: BoardDetailsCardProps) {
@@ -48,12 +44,10 @@ export const BoardDetailsCard = memo(function BoardDetailsCard({
           <BoardTaskFilterDialog />
           <EditBoardDialog
             board={board}
-            submitError={submitError}
             isPending={isPending}
             onSubmit={onUpdateBoard}
           />
           <CreateTaskDialog
-            taskSubmitError={taskSubmitError}
             isTaskPending={isTaskPending}
             onSubmit={onCreateTask}
           />

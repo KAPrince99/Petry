@@ -12,6 +12,7 @@ import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DASHBOARD_QUERY_KEYS } from "@/lib/dashboard/constants";
 import { boardsQueryOptions } from "@/lib/react-query/board-queries";
+import { toastSuccess } from "@/lib/toast";
 import { useDashboardUiStore } from "@/store/useDashboardUiStore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { deleteBoard } from "@/app/(mainapp)/actions/boardActions";
@@ -93,12 +94,24 @@ export function DashboardClient() {
         description: "",
         color: "#3b82f6",
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEYS.boards }),
+    meta: {
+      errorMessage: "Could not create board.",
+      toastId: "create-board",
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: DASHBOARD_QUERY_KEYS.boards,
+      });
+      toastSuccess("Board created", "create-board-success");
+    },
   });
 
   const { mutate: removeBoard, isPending: isDeletingBoard } = useMutation({
     mutationFn: async (boardId: string) => deleteBoard(boardId),
+    meta: {
+      errorMessage: "Could not delete board.",
+      toastId: "delete-board",
+    },
     onMutate: async (boardId) => {
       await queryClient.cancelQueries({
         queryKey: DASHBOARD_QUERY_KEYS.boards,
@@ -118,6 +131,9 @@ export function DashboardClient() {
         queryClient.setQueryData(DASHBOARD_QUERY_KEYS.boards, context.previous);
         setOrderedBoards(context.previous);
       }
+    },
+    onSuccess: () => {
+      toastSuccess("Board deleted", "delete-board-success");
     },
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEYS.boards }),
