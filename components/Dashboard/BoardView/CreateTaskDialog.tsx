@@ -98,7 +98,7 @@ export const CreateTaskDialog = memo(function CreateTaskDialog({
           </div>
           <div className="flex justify-end space-x-2 pt-4">
             {taskSubmitError ? (
-              <p className="w-full text-sm text-red-600" role="alert">
+              <p className="w-full text-sm text-destructive" role="alert">
                 {taskSubmitError}
               </p>
             ) : null}

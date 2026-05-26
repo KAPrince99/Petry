@@ -32,11 +32,11 @@ export function taskMatchesFilters(task: tasks, f: BoardTaskFilters): boolean {
 export function priorityBadgeClasses(priority: TaskPriority): string {
   switch (priority) {
     case "high":
-      return "bg-red-100 text-red-800";
+      return "bg-red-500/15 text-red-700 dark:bg-red-500/20 dark:text-red-400";
     case "medium":
-      return "bg-amber-100 text-amber-900";
+      return "bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400";
     case "low":
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-muted text-muted-foreground dark:bg-muted/80";
   }
 }

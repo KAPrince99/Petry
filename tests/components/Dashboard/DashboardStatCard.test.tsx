@@ -19,6 +19,6 @@ describe("DashboardStatCard", () => {
   it("respects explicit active override for status", () => {
     render(<DashboardStatCard label="Status" value="offline" active={false} />);
 
-    expect(screen.getByText("offline")).toHaveClass("text-amber-700");
+    expect(screen.getByText("offline")).toHaveClass("text-muted-foreground");
   });
 });

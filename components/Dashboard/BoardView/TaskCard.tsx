@@ -44,11 +44,11 @@ export const TaskCard = memo(function TaskCard({
     <article
       ref={setNodeRef}
       style={style}
-      className={`rounded-md border border-border bg-muted/50 p-3 text-sm shadow-sm ${
+      className={`rounded-md border border-border bg-muted/50 p-3 text-sm shadow-sm dark:bg-muted/30 ${
         sortableDisabled
           ? ""
           : "cursor-grab touch-none select-none active:cursor-grabbing"
-      } ${isDragging ? "border-dashed border-blue-300 bg-blue-50/40 opacity-40" : ""}`}
+      } ${isDragging ? "border-dashed border-primary/40 bg-primary/10 opacity-40 dark:bg-primary/15" : ""}`}
       {...dndProps}
       role="listitem"
     >

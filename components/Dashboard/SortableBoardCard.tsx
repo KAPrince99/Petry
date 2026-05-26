@@ -50,7 +50,7 @@ export const SortableBoardCard = memo(function SortableBoardCard({
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div
-                className="h-4 w-4 rounded ring-1 ring-black/10"
+                className="h-4 w-4 rounded ring-1 ring-border"
                 style={{ backgroundColor: board.color ?? "#3b82f6" }}
               />
               <div className="flex items-center gap-1">

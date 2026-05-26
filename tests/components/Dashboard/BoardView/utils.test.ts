@@ -88,7 +88,7 @@ describe("BoardView utils", () => {
     it("returns distinct classes per priority", () => {
       expect(priorityBadgeClasses("high")).toContain("red");
       expect(priorityBadgeClasses("medium")).toContain("amber");
-      expect(priorityBadgeClasses("low")).toContain("slate");
+      expect(priorityBadgeClasses("low")).toContain("muted");
     });
   });
 });

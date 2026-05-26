@@ -89,7 +89,7 @@ export const ColumnSection = memo(function ColumnSection({
           ref={setDropNodeRef}
           className={`min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-3 ${
             isOver
-              ? "rounded-b-lg bg-blue-50/40 ring-1 ring-inset ring-blue-200"
+              ? "rounded-b-lg bg-primary/10 ring-1 ring-inset ring-primary/30 dark:bg-primary/15"
               : ""
           }`}
           role="list"

@@ -34,9 +34,9 @@ export const DashboardStatCard = memo(function DashboardStatCard({
             "flex h-9 w-23 shrink-0 items-center justify-center gap-1.5 rounded-md px-2",
             isStatus
               ? isActive
-                ? "bg-emerald-500/12"
-                : "bg-amber-500/12"
-              : "bg-muted/70",
+                ? "bg-emerald-500/12 dark:bg-emerald-500/20"
+                : "bg-muted/70 dark:bg-muted/50"
+              : "bg-muted/70 dark:bg-muted/50",
           )}
         >
           {isStatus ? (
@@ -44,7 +44,7 @@ export const DashboardStatCard = memo(function DashboardStatCard({
               <span
                 className={cn(
                   "size-2 shrink-0 rounded-full",
-                  isActive ? "bg-emerald-500" : "bg-amber-500",
+                  isActive ? "bg-emerald-500 dark:bg-emerald-400" : "bg-muted-foreground/60",
                 )}
                 aria-hidden
               />
@@ -53,7 +53,7 @@ export const DashboardStatCard = memo(function DashboardStatCard({
                   "truncate text-md font-semibold",
                   isActive
                     ? "text-emerald-700 dark:text-emerald-400"
-                    : "text-amber-700 dark:text-amber-400",
+                    : "text-muted-foreground",
                 )}
               >
                 {value}

@@ -38,7 +38,10 @@ export function DashboardClient() {
   const boardToDelete = useDashboardUiStore((s) => s.boardToDelete);
   const closeDeleteBoard = useDashboardUiStore((s) => s.closeDeleteBoard);
 
-  const [orderedBoards, setOrderedBoards] = useState<BoardItem[]>([]);
+  const [orderedBoards, setOrderedBoards] = useState<BoardItem[]>(
+    () =>
+      queryClient.getQueryData<BoardItem[]>(DASHBOARD_QUERY_KEYS.boards) ?? [],
+  );
   const [activeBoard, setActiveBoard] = useState<BoardItem | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const lastOverId = useRef<string | null>(null);
@@ -46,9 +49,13 @@ export function DashboardClient() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   );
 
-  const { data, isPending } = useQuery(boardsQueryOptions());
+  const { data, isPending } = useQuery({
+    ...boardsQueryOptions(),
+    placeholderData: () =>
+      queryClient.getQueryData<BoardItem[]>(DASHBOARD_QUERY_KEYS.boards),
+  });
   const boards = data ?? EMPTY_BOARDS;
-  const isBoardsLoading = isPending && data === undefined;
+  const isBoardsLoading = isPending && boards.length === 0;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -59,13 +66,15 @@ export function DashboardClient() {
     setIsHydrated(true);
   }, []);
 
+  const listSource = orderedBoards.length > 0 ? orderedBoards : boards;
+
   const filteredBoards = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return orderedBoards;
-    return orderedBoards.filter((board) =>
+    if (!q) return listSource;
+    return listSource.filter((board) =>
       (board.title ?? "").toLowerCase().includes(q),
     );
-  }, [orderedBoards, search]);
+  }, [listSource, search]);
 
   const dashboardStats = useMemo(
     () => [
@@ -182,13 +191,13 @@ export function DashboardClient() {
 
   return (
     <>
-      <Topbar onCreateBoard={handleCreateBoard} creating={isCreatingBoard} />
+      {isBoardsLoading ? (
+        <DashboardLoadingSkeleton includeTopbar />
+      ) : (
+        <>
+          <Topbar onCreateBoard={handleCreateBoard} creating={isCreatingBoard} />
 
-      <main className="flex-1 px-4 py-6 sm:px-6">
-        {isBoardsLoading ? (
-          <DashboardLoadingSkeleton />
-        ) : (
-          <>
+          <main className="flex-1 px-4 py-6 sm:px-6">
             <DashboardStatsGrid stats={dashboardStats} />
 
             {boards.length === 0 ? (
@@ -207,9 +216,9 @@ export function DashboardClient() {
                 onDragEnd={handleDragEnd}
               />
             )}
-          </>
-        )}
-      </main>
+          </main>
+        </>
+      )}
 
       <UpgradeDialog />
       <DeleteBoardDialog

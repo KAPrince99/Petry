@@ -104,7 +104,7 @@ export const EditBoardDialog = memo(function EditBoardDialog({
             </div>
           </div>
           {submitError ? (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-destructive" role="alert">
               {submitError}
             </p>
           ) : null}

@@ -6,6 +6,18 @@ describe("DashboardLoadingSkeleton", () => {
   it("renders stat and board placeholders", () => {
     const { container } = render(<DashboardLoadingSkeleton />);
 
-    expect(container.querySelectorAll(".animate-pulse")).toHaveLength(10);
+    expect(container.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(
+      56,
+    );
+  });
+
+  it("includes topbar placeholders when requested", () => {
+    const { container } = render(
+      <DashboardLoadingSkeleton includeTopbar />,
+    );
+
+    expect(container.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(
+      60,
+    );
   });
 });
