@@ -43,10 +43,11 @@ export const SortableBoardCard = memo(function SortableBoardCard({
     <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} {...dndProps}>
       <Link
         href={getBoardRoute(board.id)}
+        className="block h-full cursor-pointer"
         onMouseEnter={() => prefetchBoard(board.id)}
         onFocus={() => prefetchBoard(board.id)}
       >
-        <Card className="group h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+        <Card className="group h-full cursor-pointer rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div

@@ -18,7 +18,7 @@ export const Sidebar = memo(function Sidebar() {
       <div className="border-b border-border px-5 py-[19px]">
         <Link
           href="/"
-          className="text-2xl font-semibold tracking-tight text-foreground"
+          className="cursor-pointer text-2xl font-semibold tracking-tight text-foreground"
         >
           Petry
         </Link>
@@ -27,7 +27,7 @@ export const Sidebar = memo(function Sidebar() {
         {onBoardPage ? (
           <Link
             href="/dashboard"
-            className="inline-flex w-full items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow"
+            className="inline-flex w-full cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow"
           >
             <ArrowLeft className="size-4 shrink-0" />
             Back to dashboard
@@ -35,7 +35,7 @@ export const Sidebar = memo(function Sidebar() {
         ) : (
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 rounded-lg bg-background px-3 py-2 text-sm font-medium text-foreground shadow-sm ring-1 ring-border"
+            className="flex cursor-pointer items-center gap-2 rounded-lg bg-background px-3 py-2 text-sm font-medium text-foreground shadow-sm ring-1 ring-border"
           >
             <FolderKanban className="size-4 text-muted-foreground" />
             Dashboard

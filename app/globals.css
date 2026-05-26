@@ -133,4 +133,25 @@
   html {
     @apply font-sans;
   }
+  a[href],
+  summary,
+  label[for],
+  input[type="file"],
+  input[type="file"]::file-selector-button,
+  [data-slot="dialog-trigger"],
+  [data-slot="dialog-close"] {
+    @apply cursor-pointer;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    @apply cursor-pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+  [data-sonner-toast] button,
+  [data-close-button] {
+    @apply cursor-pointer;
+  }
 }

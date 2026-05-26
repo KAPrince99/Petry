@@ -89,7 +89,7 @@ export const EditBoardDialog = memo(function EditBoardDialog({
                   key={hex}
                   type="button"
                   title={hex}
-                  className={`size-8 rounded-full ring-offset-2 ring-offset-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`size-8 cursor-pointer rounded-full ring-offset-2 ring-offset-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     editColor === hex
                       ? "ring-2 ring-foreground"
                       : "ring-0 ring-muted-foreground/40 hover:ring-1"

@@ -13,7 +13,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/70">
       <div className="container mx-auto flex items-center justify-between px-4 py-3 sm:py-4">
         <div className="flex items-center space-x-2">
-          <Link href="/" className="flex items-center gap-2 text-foreground">
+          <Link href="/" className="flex cursor-pointer items-center gap-2 text-foreground">
             <TreePalm className="h-6 w-6 sm:h-8 sm:w-8" />
             {/* <span className="text-xl sm:text-2xl font-bold text-gray-900">
               Petry
